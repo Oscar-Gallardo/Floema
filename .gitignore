@@ -11,3 +11,6 @@ public/
 # Files.
 result.xml
 npm-debug.log
+
+# Environment.
+.env
