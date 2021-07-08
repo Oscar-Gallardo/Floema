@@ -50,16 +50,19 @@ app.get('/', (req, res) => {
 
 app.get('/about', (req, res) => {
   initApi(req).then((api) => {
-    api.query([
-      Prismic.Predicates.at('document.type', 'meta'),
-      Prismic.Predicates.at('document.type', 'about')
-    ]).then((response) => {
+    api.query(
+      Prismic.Predicates.any('document.type', ['meta', 'about'])
+    ).then((response) => {
       // response is the response object. Render your views here.
       const { results } = response
-      const [meta, about] = results
+      const [about, meta] = results
 
-      console.log(meta, about)
-      res.render('pages/about')
+      console.log(about.data.body)
+
+      res.render('pages/about', {
+        about,
+        meta
+      })
     })
   })
 })
