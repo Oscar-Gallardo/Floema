@@ -29,6 +29,9 @@ const initApi = (req) => {
 
 // Link Resolver
 const handellinkResolver = (doc) => {
+  if (doc.type === 'product') {
+    return `/detail/${doc.slug}`
+  }
   /* // Define the url depending on the document type
   if (doc.type === 'page') {
     return '/page/' + doc.uid;
@@ -47,7 +50,7 @@ app.use((req, res, next) => {
     linkResolver: handellinkResolver
   } */
 
-  res.locals.Links = handellinkResolver
+  res.locals.Link = handellinkResolver
 
   res.locals.Numbers = (index) => {
     return index === 0 ? 'One' : index === 1 ? 'Two' : index === 2 ? 'Three' : index === 3 ? 'Four' : ''
