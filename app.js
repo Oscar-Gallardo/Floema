@@ -1,10 +1,20 @@
 require('dotenv').config()
 
-const express = require('express')
+const bodyParser = require('body-parser')
 const errorHandler = require('errorhandler')
+const express = require('express')
+const logger = require('morgan')
+const methodOverride = require('method-override')
+
 const app = express()
 const path = require('path')
 const port = 3000
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(errorHandler())
+app.use(logger('dev'))
+app.use(methodOverride())
 
 const Prismic = require('@prismicio/client')
 const PrismicDOM = require('prismic-dom')
@@ -29,8 +39,6 @@ const handellinkResolver = (doc) => {
   // Default to homepage
   return '/'
 }
-
-app.use(errorHandler())
 
 // Middleware to inject prismic context
 app.use((req, res, next) => {
