@@ -34,13 +34,20 @@ app.use(errorHandler())
 
 // Middleware to inject prismic context
 app.use((req, res, next) => {
-  res.locals.ctx = {
+  /* res.locals.ctx = {
     endpoint: process.env.PRISMIC_ENDPOINT,
     linkResolver: handellinkResolver
+  } */
+
+  res.locals.Links = handellinkResolver
+
+  res.locals.Numbers = (index) => {
+    return index === 0 ? 'One' : index === 1 ? 'Two' : index === 2 ? 'Three' : index === 3 ? 'Four' : ''
   }
 
   // add PrismicDOM in locals to access them in templates.
   res.locals.PrismicDOM = PrismicDOM
+
   next()
 })
 
@@ -55,26 +62,47 @@ app.get('/about', async (req, res) => {
   const api = await initApi(req)
   const about = await api.getSingle('about')
   const meta = await api.getSingle('meta')
+  const preloader = await api.getSingle('preloader')
 
   res.render('pages/about', {
     about,
-    meta
+    meta,
+    preloader
   })
 })
 
-app.get('/collections', (req, res) => {
-  res.render('pages/collections')
+app.get('/collections', async (req, res) => {
+  const api = await initApi(req)
+  const meta = await api.getSingle('meta')
+  const home = await api.getSingle('home')
+  const preloader = await api.getSingle('preloader')
+
+  const { results: collections } = await api.query(Prismic.Predicates.at('document.type', 'collection'), {
+    fetchLinks: 'product.image'
+  })
+
+  console.log(home)
+
+  res.render('pages/collections', {
+    collections,
+    home,
+    meta,
+    preloader
+  })
 })
 
 app.get('/detail/:uid', async (req, res) => {
   const api = await initApi(req)
   const meta = await api.getSingle('meta')
+  const preloader = await api.getSingle('preloader')
+
   const product = await api.getByUID('product', req.params.uid, {
     fetchLinks: 'collection.title'
   })
 
   res.render('pages/detail', {
     meta,
+    preloader,
     product
   })
 })
