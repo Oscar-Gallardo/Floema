@@ -32,6 +32,10 @@ const handellinkResolver = (doc) => {
   if (doc.type === 'product') {
     return `/detail/${doc.slug}`
   }
+
+  if (doc.type === 'about') {
+    return '/about'
+  }
   /* // Define the url depending on the document type
   if (doc.type === 'page') {
     return '/page/' + doc.uid;
