@@ -13,6 +13,7 @@ const port = 3000
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(errorHandler())
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(logger('dev'))
 app.use(methodOverride())
 
